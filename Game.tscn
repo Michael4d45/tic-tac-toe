@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://cjgqb0e5r3s31"]
+
+[ext_resource type="Shader" path="res://background.gdshader" id="1_3lwuk"]
+[ext_resource type="Shader" path="res://gameboard.gdshader" id="2_dxyed"]
+[ext_resource type="Script" path="res://gameboard.gd" id="3_4pakk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xmc81"]
+shader = ExtResource("1_3lwuk")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_50lf1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ca6b2"]
+shader = ExtResource("2_dxyed")
+shader_parameter/line_thickness = 0.475
+shader_parameter/line_color = Vector4(0, 0, 0, 1)
+shader_parameter/background = Vector4(1, 1, 1, 1)
+shader_parameter/x_color = Vector4(1, 0, 0, 1)
+shader_parameter/o_color = Vector4(0, 0, 1, 1)
+shader_parameter/grid_size = 3.0
+shader_parameter/is_clicked = false
+shader_parameter/o_mask = 0
+shader_parameter/x_mask = 0
+
+[node name="Node2D" type="Node2D"]
+
+[node name="background" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_xmc81")
+offset_left = -2.0
+offset_top = 2.0
+offset_right = 1148.0
+offset_bottom = 649.0
+texture = SubResource("CanvasTexture_50lf1")
+
+[node name="gameboard" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_ca6b2")
+offset_left = 292.0
+offset_top = 83.0
+offset_right = 806.0
+offset_bottom = 517.0
+texture = SubResource("CanvasTexture_50lf1")
+script = ExtResource("3_4pakk")
