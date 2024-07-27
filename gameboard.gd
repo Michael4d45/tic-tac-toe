@@ -37,7 +37,7 @@ func getPos(pos: Vector2) -> void:
 	
 	o_turn = !o_turn
 	
-	check_game(x_mask, o_mask)
+	check_game(x_mask, o_mask, int(grid_size))
 
 # Function to get the UV coordinates
 func get_uv(mouse_pos: Vector2) -> Vector2:
@@ -53,9 +53,45 @@ func get_grid_pos(pos: Vector2, grid_size: float) -> Vector2:
 		floor(pos.y * grid_size),
 	)
 
-func pos_to_mask(pos: Vector2, grid_size: float) -> int:
-	return 1 << int(pos.y) * int(grid_size) + int(pos.x)
+func pos_to_mask(pos: Vector2, grid_size: int) -> int:
+	return 1 << int(pos.y) * grid_size + int(pos.x)
 
-func check_game(x: int, o: int) -> void:
-	print(x)
-	print(o)
+func has_won(mask: int, grid_size: int) -> bool:
+	var horizontal_mask = (1 << grid_size) - 1
+	for _i in range(grid_size):
+		if (mask & horizontal_mask) == horizontal_mask:
+			return true
+		horizontal_mask <<= grid_size
+		
+	var vertical_mask = 1
+	for _i in range(grid_size):
+		vertical_mask <<= 2
+		vertical_mask |= 1
+		
+	print(bin_string(vertical_mask))
+	for _i in range(grid_size):
+		if (mask & vertical_mask) == vertical_mask:
+			return true
+		vertical_mask <<= grid_size
+	return false
+
+func check_game(x: int, o: int, grid_size: int) -> void:
+	if has_won(x, grid_size):
+		print("X WON!!")
+		return
+	if has_won(o, grid_size):
+		print("O WON!!")
+		return
+	
+	var board = x | o
+	var filled = (1 << (grid_size * grid_size)) - 1
+	if board == filled:
+		print("TIE!!")
+		return
+		
+func bin_string(n: int) -> String:    
+	var ret_str = ""
+	while n > 0:
+		ret_str = "{0}{1}".format([n&1, ret_str])
+		n = n>>1
+	return ret_str
