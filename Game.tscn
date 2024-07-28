@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://cjgqb0e5r3s31"]
+[gd_scene load_steps=9 format=3 uid="uid://cjgqb0e5r3s31"]
 
 [ext_resource type="Shader" path="res://background.gdshader" id="1_3lwuk"]
 [ext_resource type="Shader" path="res://gameboard.gdshader" id="2_dxyed"]
 [ext_resource type="Script" path="res://gameboard.gd" id="3_4pakk"]
+[ext_resource type="Script" path="res://RichTextLabel.gd" id="4_s3iev"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xmc81"]
 shader = ExtResource("1_3lwuk")
@@ -21,6 +22,20 @@ shader_parameter/is_clicked = false
 shader_parameter/o_mask = 0
 shader_parameter/x_mask = 0
 
+[sub_resource type="GDScript" id="GDScript_3xw2k"]
+script/source = "extends Button
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+"
+
 [node name="Node2D" type="Node2D"]
 
 [node name="background" type="TextureRect" parent="."]
@@ -33,18 +48,36 @@ texture = SubResource("CanvasTexture_50lf1")
 
 [node name="gameboard" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_ca6b2")
-offset_left = 292.0
-offset_top = 83.0
-offset_right = 806.0
-offset_bottom = 517.0
+offset_left = 126.0
+offset_top = 140.0
+offset_right = 640.0
+offset_bottom = 574.0
 texture = SubResource("CanvasTexture_50lf1")
 script = ExtResource("3_4pakk")
 
-[node name="gameboard2" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_ca6b2")
-offset_left = 292.0
-offset_top = 83.0
-offset_right = 806.0
-offset_bottom = 517.0
-texture = SubResource("CanvasTexture_50lf1")
-script = ExtResource("3_4pakk")
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = 773.0
+offset_top = 64.0
+offset_right = 896.0
+offset_bottom = 92.0
+text = "Game starting"
+script = ExtResource("4_s3iev")
+
+[node name="ResetButton" type="Button" parent="."]
+offset_left = 846.0
+offset_top = 320.0
+offset_right = 969.0
+offset_bottom = 381.0
+text = "Reset"
+
+[node name="HELP" type="Button" parent="."]
+offset_left = 815.0
+offset_top = 413.0
+offset_right = 1008.0
+offset_bottom = 566.0
+text = "HELP"
+script = SubResource("GDScript_3xw2k")
+
+[connection signal="game_state_updated" from="gameboard" to="RichTextLabel" method="_on_gameboard_game_state_updated"]
+[connection signal="button_down" from="ResetButton" to="gameboard" method="_on_reset_button_down"]
+[connection signal="button_down" from="HELP" to="gameboard" method="_on_help_button_down"]
