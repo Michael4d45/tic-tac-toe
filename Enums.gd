@@ -6,3 +6,13 @@ enum GameState {
 	X_TURN,
 	O_TURN,
 }
+
+enum Player {
+	X,
+	O,
+}
+
+enum PlayerType {
+	HUMAN,
+	AI,
+}

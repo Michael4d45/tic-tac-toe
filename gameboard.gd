@@ -1,5 +1,8 @@
 extends TextureRect
 
+var player_o: Enums.PlayerType = Enums.PlayerType.HUMAN
+var player_x: Enums.PlayerType = Enums.PlayerType.HUMAN
+
 var game_state: Enums.GameState = Enums.GameState.O_TURN
 signal game_state_updated(old_game_state: Enums.GameState, new_game_state: Enums.GameState)
 
@@ -14,11 +17,27 @@ func _ready() -> void:
 	update_game_state(game_state)
 
 func _input(event: InputEvent) -> void:
+	if game_state == Enums.GameState.X_TURN && player_x == Enums.PlayerType.AI:
+		return
+	if game_state == Enums.GameState.O_TURN && player_o == Enums.PlayerType.AI:
+		return
+
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if get_global_rect().has_point(event.global_position):
-			progressGame(event.global_position)
+			progress_human_input(event.global_position)
 
-func progressGame(pos: Vector2) -> void:
+func _process(_delta):
+	if game_state == Enums.GameState.X_TURN && player_x == Enums.PlayerType.AI:
+		ai()
+		return
+	if game_state == Enums.GameState.O_TURN && player_o == Enums.PlayerType.AI:
+		ai()
+		return
+
+	if !in_play() && player_x == Enums.PlayerType.AI && player_o == Enums.PlayerType.AI:
+		reset()
+
+func progress_human_input(pos: Vector2) -> void:
 	var grid_size = material.get_shader_parameter("grid_size")
 	var o_mask = material.get_shader_parameter("o_mask")
 	var x_mask = material.get_shader_parameter("x_mask")
@@ -140,16 +159,16 @@ func reset():
 	material.set_shader_parameter("x_mask", 0)
 	update_game_state(Enums.GameState.O_TURN)
 
-func get_random(mask: int, size: int) -> int:
-	var placement = 1 << randi_range(0, size - 1)
+func get_random(mask: int, mask_size: int) -> int:
+	var placement = 1 << randi_range(0, mask_size - 1)
 	if mask | placement == mask:
-		return get_random(mask, size)
+		return get_random(mask, mask_size)
 	return placement
 
 func in_play() -> bool:
 	return game_state == Enums.GameState.X_TURN || game_state == Enums.GameState.O_TURN
 
-func help():
+func ai():
 	if !in_play():
 		return
 	var grid_size = material.get_shader_parameter("grid_size")
@@ -164,9 +183,14 @@ func help():
 		o_mask |= random_placement
 	process_game(x_mask, o_mask, grid_size)
 
-func _on_help_button_down():
-	help()
-
 
 func _on_reset_button_down():
 	reset()
+
+
+func _on_node_2d_player_type_updated(player: Enums.Player, player_type: Enums.PlayerType):
+	match player:
+		Enums.Player.X:
+			player_x = player_type
+		Enums.Player.O:
+			player_o = player_type

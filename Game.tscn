@@ -1,9 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://cjgqb0e5r3s31"]
+[gd_scene load_steps=11 format=3 uid="uid://cjgqb0e5r3s31"]
 
 [ext_resource type="Shader" path="res://background.gdshader" id="1_3lwuk"]
 [ext_resource type="Shader" path="res://gameboard.gdshader" id="2_dxyed"]
 [ext_resource type="Script" path="res://gameboard.gd" id="3_4pakk"]
 [ext_resource type="Script" path="res://RichTextLabel.gd" id="4_s3iev"]
+[ext_resource type="Script" path="res://AI.gd" id="5_o0d2x"]
+[ext_resource type="ButtonGroup" uid="uid://ctw7f4ye6d6fk" path="res://X_player_button_group.tres" id="6_std3p"]
+[ext_resource type="ButtonGroup" uid="uid://bbexeprl8d75d" path="res://O_player_button_group.tres" id="9_vxvdq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xmc81"]
 shader = ExtResource("1_3lwuk")
@@ -22,28 +25,14 @@ shader_parameter/is_clicked = false
 shader_parameter/o_mask = 0
 shader_parameter/x_mask = 0
 
-[sub_resource type="GDScript" id="GDScript_3xw2k"]
-script/source = "extends Button
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-"
-
 [node name="Node2D" type="Node2D"]
 
 [node name="background" type="TextureRect" parent="."]
 material = SubResource("ShaderMaterial_xmc81")
-offset_left = -2.0
-offset_top = 2.0
-offset_right = 1148.0
-offset_bottom = 649.0
+offset_left = -13.0
+offset_top = 6.0
+offset_right = 1137.0
+offset_bottom = 653.0
 texture = SubResource("CanvasTexture_50lf1")
 
 [node name="gameboard" type="TextureRect" parent="."]
@@ -70,14 +59,70 @@ offset_right = 969.0
 offset_bottom = 381.0
 text = "Reset"
 
-[node name="HELP" type="Button" parent="."]
-offset_left = 815.0
-offset_top = 413.0
-offset_right = 1008.0
-offset_bottom = 566.0
-text = "HELP"
-script = SubResource("GDScript_3xw2k")
+[node name="Node2D" type="Node2D" parent="."]
+position = Vector2(886, 442)
+script = ExtResource("5_o0d2x")
+
+[node name="HumanXButton" type="Button" parent="Node2D"]
+offset_left = -127.0
+offset_top = 35.0
+offset_right = -62.0
+offset_bottom = 145.0
+toggle_mode = true
+button_pressed = true
+button_group = ExtResource("6_std3p")
+text = "Human"
+
+[node name="AIXButton" type="Button" parent="Node2D"]
+offset_left = -59.0
+offset_top = 35.0
+offset_right = -4.0
+offset_bottom = 145.0
+toggle_mode = true
+button_group = ExtResource("6_std3p")
+text = "AI"
+
+[node name="HumanOButton" type="Button" parent="Node2D"]
+offset_left = 50.0
+offset_top = 34.0
+offset_right = 115.0
+offset_bottom = 144.0
+toggle_mode = true
+button_pressed = true
+button_group = ExtResource("9_vxvdq")
+text = "Human"
+
+[node name="AIOButton" type="Button" parent="Node2D"]
+offset_left = 119.0
+offset_top = 34.0
+offset_right = 174.0
+offset_bottom = 144.0
+toggle_mode = true
+button_group = ExtResource("9_vxvdq")
+text = "AI"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Node2D"]
+offset_left = -117.0
+offset_top = 1.0
+offset_right = -22.0
+offset_bottom = 41.0
+text = "Player X"
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="Node2D"]
+offset_left = 70.0
+offset_top = -14.0
+offset_right = 165.0
+offset_bottom = 26.0
+text = "Player O"
 
 [connection signal="game_state_updated" from="gameboard" to="RichTextLabel" method="_on_gameboard_game_state_updated"]
 [connection signal="button_down" from="ResetButton" to="gameboard" method="_on_reset_button_down"]
-[connection signal="button_down" from="HELP" to="gameboard" method="_on_help_button_down"]
+[connection signal="player_type_updated" from="Node2D" to="gameboard" method="_on_node_2d_player_type_updated"]
+[connection signal="toggled" from="Node2D/HumanXButton" to="Node2D" method="_on_human_x_button_toggled"]
+[connection signal="toggled" from="Node2D/HumanXButton" to="Node2D/AIXButton" method="_on_human_x_button_toggled"]
+[connection signal="toggled" from="Node2D/AIXButton" to="Node2D" method="_on_aix_button_toggled"]
+[connection signal="toggled" from="Node2D/AIXButton" to="Node2D/HumanXButton" method="_on_aix_button_toggled"]
+[connection signal="toggled" from="Node2D/HumanOButton" to="Node2D" method="_on_human_o_button_toggled"]
+[connection signal="toggled" from="Node2D/HumanOButton" to="Node2D/AIOButton" method="_on_human_o_button_toggled"]
+[connection signal="toggled" from="Node2D/AIOButton" to="Node2D" method="_on_aio_button_toggled"]
+[connection signal="toggled" from="Node2D/AIOButton" to="Node2D/HumanOButton" method="_on_aio_button_toggled"]
